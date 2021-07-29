@@ -116,7 +116,6 @@ import BScroll from 'better-scroll'
       }
     },
     mounted() {
-      console.log(document.querySelector('.wrapper'));
       this.scroll = new BScroll('.wrapper',{
         probeType: 3,
         pullUpLoad: true
