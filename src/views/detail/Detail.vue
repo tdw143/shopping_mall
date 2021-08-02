@@ -31,7 +31,7 @@
     </scroll>
     <back-top @click.native="backTop" v-show="isShowBackTop"></back-top>
     <detail-bottom-bar @addCart="addToCart"></detail-bottom-bar>
-    <h2>{{ iid }}</h2>
+    <!-- <toast :message='message' :show="isShow"></toast> -->
   </div>
 </template>
 
@@ -43,7 +43,7 @@ import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
-import DetailBottomBar from './childComps/DetailBottomBar'
+import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
@@ -59,6 +59,8 @@ import {
 import { itemListenerMixin, backTopMixin } from "common/mixin";
 import { debounce } from "common/utils";
 
+import { mapActions } from 'vuex'
+
 export default {
   name: "Detail",
   components: {
@@ -71,7 +73,7 @@ export default {
     DetailCommentInfo,
     DetailBottomBar,
     Scroll,
-    GoodsList,
+    GoodsList
   },
   data() {
     return {
@@ -130,7 +132,7 @@ export default {
       this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
       this.themeTopYs.push(Number.MAX_VALUE);
-      console.log(this.themeTopYs);
+      // console.log(this.themeTopYs);
     }, 100);
   },
   mixins: [itemListenerMixin, backTopMixin],
@@ -141,6 +143,7 @@ export default {
     this.$bus.$off("itemImgLoad", this.itemImgListener);
   },
   methods: {
+    ...mapActions(['addCart']),
     imageLoad() {
       // this.newRefresh()
       this.$refs.scroll.refresh();
@@ -188,24 +191,35 @@ export default {
         }
       }
       // 3.显示是否回到顶部
-      this.listenShowBackTop(position)
+      this.listenShowBackTop(position);
     },
     addToCart() {
       // console.log('-------');
       // 1.获取购物车需要展示的信息
-      const product = {}
-      product.image = this.topImages[0]
-      product.title = this.goods.title
-      product.desc = this.goods.desc
-      product.price = this.goods.realPrice
-      product.iid = this.iid
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
 
       // 2.将商品添加到购物车里
       // this.$store.state.cartList.push(product)
-      // this.$store.commit('addCart', product) --> mutations 
-      this.$store.dispatch('addCart', product) // actions
-      console.log(product);
-    }
+
+      // this.$store.commit('addCart', product) --> mutations
+
+      // this.$store.dispatch("addCart", product) // actions
+      //   .then(res => {
+      //     console.log(this.$toast);
+      //   });
+
+      this.addCart(product).then(res => {
+        console.log(res);
+        console.log(this.$toast);
+        this.$toast.show(res, 2000)
+      })
+      // console.log(product);
+    },
   },
 };
 </script>
