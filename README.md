@@ -24,4 +24,4 @@ npm run test
 ```
 npm run lint
 ```
-### 用vue做的商城supermall项目，学习自b站coderwhy
+### 用vue做的仿商城supermall项目，学习自b站coderwhy
