@@ -14,7 +14,7 @@
             @scroll="contentScroll"
             :pull-up-load="true"
             @pullingUp="loadMore">
-      <home-swiper :banner="banner" @swiperImageLoad="swiperImageLoad"></home-swiper>
+      <home-swiper :banner="banner"></home-swiper>
       <recommend-view :recommend="recommend"></recommend-view>
       <feature-view />
       <tab-control
@@ -40,6 +40,7 @@ import GoodList from "components/content/goods/GoodsList";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import {itemListenerMixin, backTopMixin} from 'common/mixin'
+import {POP, NEW, SELL} from "common/const";
 
 export default {
   name: "Home",
@@ -62,8 +63,8 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
-      currentType: "pop",
-      tabOffsetTop: 0,
+      currentType: POP,
+      // tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0
     };
@@ -72,9 +73,9 @@ export default {
     // 1.请求多个数据
     this.getHomeMultidata();
     // 2.请求商品数据
-    this.getHomeGoods("pop");
-    this.getHomeGoods("new");
-    this.getHomeGoods("sell");
+    this.getHomeGoods(POP);
+    this.getHomeGoods(NEW);
+    this.getHomeGoods(SELL);
   },
   mounted() {
     // 3.监听item中图片加载完成
@@ -104,13 +105,13 @@ export default {
     tabClick(index) {
       switch (index) {
         case 0:
-          this.currentType = "pop";
+          this.currentType = POP;
           break;
         case 1:
-          this.currentType = "new";
+          this.currentType = NEW;
           break;
         case 2:
-          this.currentType = "sell";
+          this.currentType = SELL;
           break;
       }
       this.$refs.tabControl1.currentIndex = index;
@@ -121,16 +122,17 @@ export default {
       // 1.判断BackTop是否显示
        this.listenShowBackTop(position)
       // 2.决定tabControl是否吸顶(position:fixed)
-      this.isTabFixed = (-position.y) > this.tabOffsetTop
+      this.isTabFixed = (-position.y) > this.$refs.tabControl2.$el.offsetTop
+      // console.log(this.$refs.tabControl2.$el.offsetTop);
     },
     loadMore() {
       console.log('加载更多');
       this.getHomeGoods(this.currentType)
       this.$refs.scroll.refresh()
     },
-    swiperImageLoad() {
-      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
-    },
+    // swiperImageLoad() {
+    //   this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+    // },
     /*
       网络请求相关的方法
      */
@@ -138,7 +140,7 @@ export default {
       getHomeMultidata().then((res) => {
         this.banner = res.data.banner.list;
         this.recommend = res.data.recommend.list;
-        console.log(this.banner);
+        // console.log(this.banner);
       });
     },
     getHomeGoods(type) {

@@ -15,6 +15,7 @@
     "node-sass": "^4.14.1",
     "postcss-px-to-viewport": "^1.1.0",
     "sass-loader": "^8.0.2",
+    "svg-sprite-loader": "^6.0.9",
     "swiper": "^6.8.0",
     "vue": "^2.6.10",
     "vue-awesome-swiper": "^4.1.1",
